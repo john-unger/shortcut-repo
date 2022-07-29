@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+function d-destroy() {
+  docker compose down -v
+}

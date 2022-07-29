@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+function d-stop() {
+  docker compose stop $1
+}
+
+

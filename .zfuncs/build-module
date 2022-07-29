@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+function build-module() {
+    echo -e "Running \e[34m./gradlew \e[32m-p $1 \e[35minstall\e[0m"
+    ./gradlew -p $1 install;
+}

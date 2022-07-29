@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+
+#
+# Usage:
+#
+#     catalina.sh run 2>&1 | colorize-tomcat
+#     tail -200 catalina.out | colorize-tomcat
+#
+# Previous versions:
+#
+#     https://gist.github.com/masonwan/7956055
+#     https://gist.github.com/ElMesa/374c556283972e96deef
+#
+
+colorizeLine() {
+
+    local color="$1"
+    local level="$2"
+
+    colorize "$color" "^.*$level.*"
+}
+
+colorize() {
+
+    local color="$1"
+    local level="$2"
+
+    ack --flush --nopager --passthru --color --color-match="$color" "$level"
+}
+
+colorize green  "\[[^\]]+\]"            | \
+colorize red    "ERROR"                 | \
+colorize red    "SEVERE"                | \
+colorize yellow "DEBUG"                 | \
+#colorize yellow "Deploying|finished"    | \
+colorize blue   "INFO"                  | \
+colorize cyan   "^\d\d-...-\d\d\d\d \d\d:\d\d:\d\d.\d\d\d"
+
+
+####################################################################
+# Colors available
+#
+# From Stackoverflow: http://stackoverflow.com/a/9626444
+# Thanks to Andy Lester: http://stackoverflow.com/users/8454/andy-lester
+# Thanks to Mytho: http://stackoverflow.com/users/225037/mytho
+####################################################################
+#The recognized normal foreground color attributes (colors 0 to 7) are:
+#
+#     black  red  green  yellow  blue  magenta  cyan  white
+#
+#   The corresponding bright foreground color attributes (colors 8 to 15)
+#   are:
+#
+#     bright_black  bright_red      bright_green  bright_yellow
+#     bright_blue   bright_magenta  bright_cyan   bright_white
+#
+#   The recognized normal background color attributes (colors 0 to 7) are:
+#
+#     on_black  on_red      on_green  on_yellow
+#     on_blue   on_magenta  on_cyan   on_white
+#
+#   The recognized bright background color attributes (colors 8 to 15) are:
+#
+#     on_bright_black  on_bright_red      on_bright_green  on_bright_yellow
+#     on_bright_blue   on_bright_magenta  on_bright_cyan   on_bright_white
+#
+#   For any of the above listed attributes, case is not significant
+####################################################################

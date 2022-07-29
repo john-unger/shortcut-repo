@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+function build() {
+    echo -e "Running \e[34m./gradlew\e[0m"
+    ./gradlew
+}

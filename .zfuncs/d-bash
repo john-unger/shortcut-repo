@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+function d-bash() {
+  docker compose exec $1 bash --login;
+}

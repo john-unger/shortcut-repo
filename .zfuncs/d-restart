@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+function d-restart() {
+  docker compose restart $1
+}

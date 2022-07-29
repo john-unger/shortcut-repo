@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+function build-clean() {
+    echo -e "Running \e[34m./gradlew \e[32m--rerun-tasks clean build\e[0m"
+    ./gradlew --rerun-tasks clean build
+}

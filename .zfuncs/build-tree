@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Describes the entire dependency tree for the core module. This can be done for any project module.
+
+function build-tree() {
+    echo -e "Running \e[34m./gradlew \e[32m:$1:dependencies\e[0m"
+    ./gradlew :$1:dependencies ;
+}

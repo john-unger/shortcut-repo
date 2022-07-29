@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+function d-logs() {
+    docker compose logs --no-log-prefix --tail=500 -f ${1:-tomcat} | _d_colorize ${1:-tomcat}
+}

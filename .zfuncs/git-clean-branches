@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+function git-clean-branches() {
+	echo -e "Cleaning out merged branches... Using \e[34mgit branch \e[31m-d\e[0m"
+	git branch --merged | egrep -v "(^\*|master|main|dev)" | xargs git branch -d
+	echo -e "\n\n\e[34mRemaining git branches:\e[0m"
+	git branch
+}

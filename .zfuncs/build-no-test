@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+function build-no-test() {
+    echo -e "Running \e[34m./gradlew \e[32m-x test\e[0m"
+    ./gradlew -x test
+}

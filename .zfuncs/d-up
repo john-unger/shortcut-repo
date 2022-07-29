@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+function d-up() {
+  docker compose up -d
+}

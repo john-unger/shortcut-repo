@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+function _d_colorize() {
+    if [[ $1 == "tomcat" ]]
+    then
+        colorize-tomcat
+    else
+        cat
+    fi
+}

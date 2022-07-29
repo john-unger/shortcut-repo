@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+function build-clean-node-modules() {
+    echo -e "Running \e[34m./gradlew \e[32m--rerun-tasks clean build\e[0m"
+    ./gradlew --rerun-tasks clean build
+
+    if [ $? -eq 0 ]; then
+        echo -e "... && \e[31m rm node_modules/\e[0m"
+        rm -r ./frontend/**/node_modules
+    else
+        echo "Couldn't clean"
+        exit 1 # terminate and indicate error
+    fi
+}

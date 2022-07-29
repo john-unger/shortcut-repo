@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+function d-start() {
+  docker compose start $1
+}
+
