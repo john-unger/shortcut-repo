@@ -2,7 +2,7 @@
 
 This repo contains various shortcuts I tend to make use of.
 
-## macOS Install
+## 🖥🍏 macOS Install
 Add these lines to your `.zshrc`:
 
 ```
