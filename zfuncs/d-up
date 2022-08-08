@@ -2,4 +2,8 @@
 
 function d-up() {
   docker compose up -d
+  if [ $? -gt 0 ]; then
+    echo "\n\nCouldn't bring up docker instance\nCurrent containers:"
+    docker compose ls
+  fi
 }
