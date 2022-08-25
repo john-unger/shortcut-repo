@@ -1,4 +1,4 @@
-# shortcut-repo
+# dev-shortcuts
 
 This repo contains various shortcuts I tend to make use of.
 
