@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
 function g-quick() {
-    echo -e "Running \e[34m./gradlew \e[32m-x test -x checkstyleMain \e[35m--offline\e[0m"
-    ./gradlew -x test -x checkstyleMain --offline
+    echo -e "Running \e[34m./gradlew \e[32m-x checkstyleMain -x checkstyleTest -x test \e[35m--offline\e[0m"
+    ./gradlew -x checkstyleMain -x checkstyleTest -x test --offline
 }
