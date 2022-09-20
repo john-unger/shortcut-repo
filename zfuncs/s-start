@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+function s-start() {
+  echo -e "Running \e[34myarn server:styleguide\e[0m"
+  yarn server:styleguide
+}
+
