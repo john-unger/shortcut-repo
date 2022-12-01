@@ -2,6 +2,8 @@
 
 function s-start() {
   echo -e "Running \e[34myarn server:styleguide\e[0m"
+  echo ""
+  echo "Access styleguide: http://localhost:8080/"
   yarn server:styleguide
 }
 
