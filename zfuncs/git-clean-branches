@@ -8,7 +8,7 @@ function git-clean-branches() {
 	git branch --merged | egrep -v "(^\*|master|main|dev)" | xargs git branch -d
 	echo -e "\n\n\e[34mRemaining git branches:\e[0m"
 	git branch
-	echo "\n\tPulling all local branches..."
+	echo -e "\n\n\e[34mPulling all local branches...\e[0m"
 	for brname in `git for-each-ref --format='%(refname:short)' refs/heads/ | egrep -v "(^\*|master|main|dev)"`
 	do
     	git fetch origin $brname:$brname
