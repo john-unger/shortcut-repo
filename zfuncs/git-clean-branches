@@ -3,7 +3,7 @@
 function git-clean-branches() {
 	echo -e "Cleaning out merged branches... Using \e[34mgit branch \e[31m-d\e[0m"
 	TMPBR=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
-	git stash && git checkout $TMPBR && git pull
+	git stash && git checkout $TMPBR && git pull --verbose
 
 	git branch --merged | egrep -v "(^\*|master|main|dev)" | xargs git branch -d
 	echo -e "\n\n\e[34mRemaining git branches:\e[0m"
@@ -11,6 +11,7 @@ function git-clean-branches() {
 	echo -e "\n\n\e[34mPulling all local branches...\e[0m"
 	for brname in `git for-each-ref --format='%(refname:short)' refs/heads/ | egrep -v "(^\*|master|main|dev)"`
 	do
-    	git fetch origin $brname:$brname
+		echo -e "git fetch \e[32m$brname\e[0m"
+    	git fetch origin $brname:$brname --verbose
 	done
 }
