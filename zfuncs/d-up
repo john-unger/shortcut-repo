@@ -1,9 +1,47 @@
-#!/usr/bin/env bash
+#!/bin/zsh
 
 function d-up() {
+
+  # Start the containers
   docker compose up -d
+
+  # Check the exit status of the previous command
   if [ $? -gt 0 ]; then
-    echo "\n\nCouldn't bring up docker instance\nCurrent containers:"
-    docker compose ls
+    # Retrieve running container details
+    compose_output=$(docker compose ls --format json)
+
+    # Extract the name value using `jq` and store in an array
+    running_names=($(echo "$compose_output" | jq -r '.[].Name'))
+
+    # Extract the ConfigFiles value using `jq`
+    config_files=$(echo "$compose_output" | jq -r '.[].ConfigFiles')
+
+    # Prompt the user for a yes or no input
+    echo -e "\nCould not start container because the following containers are already running:"
+    printf "\e[31m%s\e[0m\n" "${running_names[@]}"
+    echo -n "Do you want to stop them and continue? (y/n): "
+
+    read response
+
+    # Convert the response to lowercase for case-insensitive comparison
+    response=$(echo "$response" | tr '[:upper:]' '[:lower:]')
+
+    # Check the user's input and take action accordingly
+    if [[ "$response" == "y" || "$response" == "yes" ]]; then
+      echo "Stopping the running containers..."
+      # Perform desired actions if the response is yes
+      docker compose -f "$config_files" down
+
+      # Check the exit status of the previous command
+      if [ $? -eq 0 ]; then
+        echo "Starting the containers..."
+        docker compose up -d
+      else
+        echo "Failed to stop the containers. Exiting..."
+      fi
+    else
+      echo "Aborting. Exiting..."
+    fi
   fi
+
 }
