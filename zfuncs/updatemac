@@ -1,0 +1,43 @@
+#!/bin/zsh
+
+function updatemac() {
+
+  # Function to echo colored text
+  function echo_color() {
+    local color=$1
+    shift
+    echo -e "\033[${color}m$@\033[0m"
+  }
+
+  # System updates
+  echo_color "1;34" "Updating macOS..."
+  softwareupdate -ia
+
+  # App Store updates
+  echo_color "1;34" "Updating App Store apps..."
+  mas upgrade
+
+  # Brew updates
+  echo_color "1;34" "Updating Homebrew..."
+  brew update
+  echo_color "1;34" "Upgrading Homebrew packages..."
+  brew upgrade
+
+  # List outdated casks and prompt for upgrade if any
+  echo_color "1;34" "Checking for outdated casks..."
+  outdated_casks=$(brew outdated --cask --greedy --verbose)
+  if [[ -n $outdated_casks ]]; then
+    echo_color "1;33" "Outdated casks found:"
+    echo "$outdated_casks"
+    read -p "Do you want to upgrade the outdated casks? (y/n): " response
+    if [[ $response == "y" ]]; then
+      echo_color "1;34" "Upgrading outdated casks..."
+      brew upgrade --cask --greedy
+    fi
+  else
+    echo_color "1;32" "No outdated casks found."
+  fi
+
+  echo_color "1;34" "Cleaning up Homebrew..."
+  brew cleanup
+}
