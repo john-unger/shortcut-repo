@@ -14,8 +14,12 @@ function updatemac() {
   # Function to log output to a file
   function log_output() {
     local logfile="updatemac_log.txt"
-    echo "$@" >> "$logfile"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')]: $@" >> "$logfile"
   }
+
+  # Overwrite the log file if it exists
+  local logfile="updatemac_log.txt"
+  echo "Updating log on: $(date '+%Y-%m-%d %H:%M:%S')" > "$logfile"
 
   # Check internet connectivity
   if ! ping -c 1 8.8.8.8 &>/dev/null; then
@@ -38,7 +42,7 @@ function updatemac() {
 
   # Check for App Store updates
   echo_color "1;34" "Checking for App Store updates..."
-  if mas outdated >/dev/null; then
+  if mas outdated | grep -q "^[0-9]"; then
     echo_color "1;33" "App Store updates are available."
     updates_pending=true
   else
@@ -47,7 +51,7 @@ function updatemac() {
 
   # Check for Homebrew updates
   echo_color "1;34" "Checking for Homebrew updates..."
-  if brew outdated >/dev/null; then
+  if brew outdated | grep -q "^[0-9]"; then
     echo_color "1;33" "Homebrew updates are available."
     updates_pending=true
   else
@@ -75,29 +79,31 @@ function updatemac() {
 
     if [[ "$response" != "y" && "$response" != "yes" ]]; then
       echo_color "1;31" "Updates aborted by user."
+      log_output "Updates aborted by user."
       return 1
     fi
   else
     echo_color "1;32" "No updates pending. Exiting."
+    log_output "No updates pending. Exiting."
     return 0
   fi
 
   # Perform macOS update in the background
   echo_color "1;34" "Updating macOS..."
-  { softwareupdate -ia > >(log_output) 2>&1; echo_color "1;32" "macOS update complete."; } &
+  { softwareupdate -ia > >(log_output "macOS update"); echo_color "1;32" "macOS update complete."; } &
 
   # Perform App Store update in the background
   echo_color "1;34" "Updating App Store apps..."
-  { mas upgrade > >(log_output) 2>&1; echo_color "1;32" "App Store update complete."; } &
+  { mas upgrade > >(log_output "App Store update"); echo_color "1;32" "App Store update complete."; } &
 
   # Perform Homebrew update in the background
   echo_color "1;34" "Updating Homebrew..."
-  { brew update > >(log_output) 2>&1; echo_color "1;32" "Homebrew update complete."; } &
+  { brew update > >(log_output "Homebrew update"); echo_color "1;32" "Homebrew update complete."; } &
 
   # Upgrade outdated casks if any in the background
   if [[ -n $outdated_casks ]]; then
-    echo_color "1;34" "Upgrading outdated casks..."
-    { brew upgrade --cask --greedy > >(log_output) 2>&1; echo_color "1;32" "Cask upgrade complete."; } &
+    echo_color "1;34" "Upgrading outdated casks and packages..."
+    { brew upgrade --cask --greedy > >(log_output "Cask and package upgrade"); echo_color "1;32" "Cask and package upgrade complete."; } &
   fi
 
   # Wait for all background updates to finish
@@ -105,7 +111,7 @@ function updatemac() {
 
   # Perform Homebrew cleanup
   echo_color "1;34" "Cleaning up Homebrew..."
-  brew cleanup > >(log_output) 2>&1
+  brew cleanup > >(log_output "Homebrew cleanup")
   echo_color "1;32" "Homebrew cleanup complete."
 
   # Print the log file location
