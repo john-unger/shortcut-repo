@@ -5,7 +5,7 @@
 
 function updatemac() {
 
-  local LOGFILE="updatemac_log.txt"
+  local LOGFILE="$HOME/updatemac_log.txt"
   local TIMESTAMP_FORMAT="%Y-%m-%d %H:%M:%S"
 
   # Function to echo colored text and log output to a file
@@ -13,7 +13,7 @@ function updatemac() {
     local color=$1
     local message=$2
 
-    echo "[$(date +$TIMESTAMP_FORMAT)]: ${message}" >> "$LOGFILE"
+    echo "[$(date +"$TIMESTAMP_FORMAT")]: ${message}" >> "$LOGFILE"
     if [ -z "$color" ]; then
       echo "$message"
     else
@@ -22,7 +22,7 @@ function updatemac() {
   }
 
   # Overwrite the log file if it exists
-  echo "Updating log on: $(date +$TIMESTAMP_FORMAT)" > "$LOGFILE"
+  echo "Updating log on: $(date +"$TIMESTAMP_FORMAT")" > "$LOGFILE"
 
   # Check internet connectivity
   if ! ping -c 1 8.8.8.8 &>/dev/null; then
@@ -146,5 +146,5 @@ function updatemac() {
 
   # Print the log file location and instructions
   echo_color_log "1;34" "To view the log, run the following command:"
-  echo_color_log "1;34" "bat $(pwd)/updatemac_log.txt"
+  echo_color_log "1;34" "bat $LOGFILE"
 }
