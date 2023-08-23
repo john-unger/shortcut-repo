@@ -13,9 +13,6 @@ function d-up() {
     # Extract the name value using `jq` and store in an array
     running_names=($(echo "$compose_output" | jq -r '.[].Name'))
 
-    # Extract the ConfigFiles value using `jq`
-    config_files=$(echo "$compose_output" | jq -r '.[].ConfigFiles')
-
     # Prompt the user for a yes or no input
     echo -e "\nCould not start container because the following containers are already running:"
     printf "\e[31m%s\e[0m\n" "${running_names[@]}"
@@ -30,15 +27,19 @@ function d-up() {
     if [[ "$response" == "y" || "$response" == "yes" ]]; then
       echo "Stopping the running containers..."
       # Perform desired actions if the response is yes
-      docker compose -f "$config_files" down
+      for name in $running_names; do
+        echo -e "Stopping container: \e[31m$name\e[0m "
+        docker compose -p "$name" down
 
-      # Check the exit status of the previous command
-      if [ $? -eq 0 ]; then
-        echo "Starting the containers..."
-        docker compose up -d
-      else
-        echo "Failed to stop the containers. Exiting..."
-      fi
+        # Check the exit status of the previous command
+        if [ $? -ne 0 ]; then
+          echo "Failed to stop container. Exiting..."
+          exit 1
+        fi
+      done
+
+      echo "Starting the container..."
+      docker compose up -d
     else
       echo "Aborting. Exiting..."
     fi
