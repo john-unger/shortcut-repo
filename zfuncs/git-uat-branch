@@ -1,0 +1,17 @@
+#!/usr/bin/env zsh
+
+function git-uat-branch() {
+
+    branch_name="$1" # branch name provided as the first argument
+
+    if [[ -z "$branch_name" ]]; then
+        echo -e "Usage: $0 \e[34m<git branch_name>\e[0m"
+        return 1
+    fi
+
+    echo -e "Pulling in origin of \e[34m $branch_name \e[0m..."
+
+    git fetch origin
+    git merge --no-edit origin/"$branch_name"
+
+}

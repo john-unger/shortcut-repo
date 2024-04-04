@@ -1,0 +1,27 @@
+#!/usr/bin/env zsh
+
+function check-url-health() {
+    url="$1" # URL provided as the first argument
+    expected_code="200"
+
+    echo -e "Waiting for this URL to return \e[34m $expected_code \e[0m code: \e[34m $url \e[0m"
+
+    if [[ -z "$url" ]]; then
+        echo -e "Usage: $0 \e[34m<URL>\e[0m"
+        return 1
+    fi
+
+    while true; do
+        response=$(curl -s -o /dev/null -w "%{http_code}" -L "$url")
+        if [[ "$response" == "$expected_code" ]]; then
+            echo "HTTP response code is $response. The URL is healthy."
+            break
+        else
+            echo "HTTP response code is $response. Waiting for the URL to become healthy..."
+            sleep 1
+        fi
+    done
+
+}
+
+
