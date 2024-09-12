@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+function d-pull() {
+  docker compose pull && docker compose up --no-start --force-recreate
+}
