@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-function check-url-health() {
+function wait-url-health() {
     url="$1" # URL provided as the first argument
     expected_code="200"
 
