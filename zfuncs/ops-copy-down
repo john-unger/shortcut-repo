@@ -1,0 +1,16 @@
+#!/usr/bin/env zsh
+
+function ops-copy-down() {
+    tenant="$1" # Tenant provided as the first argument
+    echo -e "To be used within ops/tenants/. Describing pod of tenant: \e[34m $tenant \e[0m"
+
+    if [[ -z "$tenant" ]]; then
+        echo -e "Usage: $0 \e[34m<tentant>\e[0m"
+        echo "Example: \"qa\" or funds-qa"
+        return 1
+    fi
+
+    # render the steps
+}
+
+
