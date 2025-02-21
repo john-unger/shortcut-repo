@@ -1,0 +1,59 @@
+#!/usr/bin/env zsh
+
+function ops-copy-down() {
+      # Get the tenant passed as the first argument
+      local tenant="$1"
+
+      # Check if the user provided a tenant
+      if [[ -z "$tenant" ]]; then
+            echo "Usage: ops-copy-down <tenant>"
+            echo "Example: ops-copy-down qa  or  ops-copy-down funds-qa"
+            return 1
+      fi
+
+      # Convert tenant to lowercase (for tenantLower)
+      local tenantLower
+      tenantLower="${tenant}-uat"
+
+      # Get today's date in YYYYMMDD format
+      local todaysdate
+      todaysdate="$(date +%Y%m%d)"
+
+      # Print a nice header message
+      echo -e "\n\e[34m==[ ops-copy-down for tenant: $tenant ]==\e[0m"
+      echo -e "tenantLower: \e[32m${tenantLower}\e[0m"
+      echo -e "todaysdate:  \e[32m${todaysdate}\e[0m\n"
+
+      # Render out the steps (using a here-document for readability)
+      cat <<EOF
+Steps to CopyDown (easy to copy & paste):
+
+1) To get secret:
+   kubectl -n percona get secrets percona-cluster-secrets -o jsonpath="{.data.root}" | base64 --decode
+
+2) To start shell in the pod:
+   kubectl -n percona exec -it -c pxc pod/percona-pxc-0 -- /bin/bash
+
+3) To build datadump (mysqldump):
+   mysqldump -u root -p -v --hex-blob --single-transaction --skip-lock-tables --quick ${tenant} \\
+   | gzip -c > /tmp/sandbox-tl-production_${tenant}_${todaysdate}.sql.gz
+
+4) To copy dump to local:
+   kubectl -n percona -c pxc cp --retries=-1 \\
+   percona-pxc-0:/tmp/sandbox-tl-production_${tenant}_${todaysdate}.sql.gz \\
+   ~/Desktop/sandbox-tl-production_${tenant}_${todaysdate}.sql.gz
+
+5) To copy dump to lower environment (tenantLower):
+   kubectl -n percona -c pxc cp --retries=-1 \\
+   ~/Desktop/sandbox-tl-production_${tenant}_${todaysdate}.sql.gz \\
+   percona-pxc-0:/tmp/sandbox-tl-production_${tenant}_${todaysdate}.sql.gz
+
+6) To override DB in lower (tenantLower):
+   pv /tmp/sandbox-tl-production_${tenant}_${todaysdate}.sql.gz \\
+   | gzip -dc \\
+   | mysql -u root -p\$(cat /etc/mysql/mysql-users-secret/root) -D ${tenantLower}
+
+7) After that, you can port-forward and perform bulk actions, etc.
+
+EOF
+}
