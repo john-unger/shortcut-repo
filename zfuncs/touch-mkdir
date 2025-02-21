@@ -1,0 +1,23 @@
+#!/usr/bin/env zsh
+
+function touch-mkdir() {
+    local filepath="$1"  # provided as the first argument
+
+    # If no filepath was given, show usage and exit.
+    if [[ -z "$filepath" ]]; then
+        echo -e "Usage: $0 \e[34m<filepath>\e[0m"
+        return 1
+    fi
+
+    # Extract the directory from the full file path.
+    local dirs="$(dirname "$filepath")"
+
+    echo -e "Creating these paths: \e[34m$dirs\e[0m"
+    echo -e "Touching file:        \e[34m$filepath\e[0m"
+
+    # Create the directories if they don't exist.
+    mkdir -p "$dirs"
+
+    # Create the file (or update its timestamp).
+    touch "$filepath"
+}
